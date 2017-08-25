@@ -1,0 +1,6 @@
+main (String[] args) {
+  (Number a, Number b) {
+    return a+b;
+  } => function add => add(8, 7)! => sum => console.log(sum)!;
+}
+// prints 15

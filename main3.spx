@@ -1,0 +1,13 @@
+main (String[] args) {
+  (){
+    (Number a, Number b) {
+      return a+b;
+    } => function add;
+    (Number a, Number b) {
+      return a*b;
+    } => function multiply;
+  } => function defineMath;
+  defineMath => add(8, 7)! => sum => console.log(sum)!;
+  defineMath => multiply(2, 4)! => product => console.log(product)!;
+}
+// either product or sum gets printed first

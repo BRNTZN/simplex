@@ -1,0 +1,11 @@
+main (String[] args) {
+  {
+    (Number a, Number b) {
+      return a+b;
+    } => function add;
+    (Number a, Number b) {
+      return a*b;
+    } => function multiply;
+  }! => add(8, 7)! => sum => console.log(sum)! => multiply(2, 4)! => product => console.log(product)!;
+}
+// prints 15 and 8
