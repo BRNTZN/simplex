@@ -1,5 +1,5 @@
 main (String[] args) {
-  (){
+  {
     (Number a, Number b) {
       return a+b;
     } => function add;

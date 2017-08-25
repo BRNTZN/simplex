@@ -1,0 +1,5 @@
+main (String[] args) {
+  5 => Number a;
+  12 => Number b;
+  (a,b) => a + b => sum => console.log(sum)!
+}
