@@ -2,9 +2,17 @@ main (String[] args) {
   (Number a, Number b) {
     return a+b;
   } => function add;
-  4 => Number a;
-  8 => Number b;
+  (Number a, Number b) {
+    return a*b;
+  } => function multiply;
+  (Number a) {
+    console.log(a)
+  } => function print;
 } -> {
-  add(a, b) => console.log;
+  add(6, 6) => Number sum;
+  multiply(2, 4) => Number product;
+} -> {
+  print(sum);
+  print(product);
 }
-// prints 12
+// prints 12 & 8 in any order

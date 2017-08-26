@@ -1,0 +1,4 @@
+String name;
+function info {
+  return "I'm a person named " + name;
+}

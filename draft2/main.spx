@@ -5,6 +5,6 @@ main (String[] args) {
   4 => Number a;
   8 => Number b;
 } -> {
-  add(a, b) => console.log;
+  add(a, b) -> console.log;
 }
 // prints 12

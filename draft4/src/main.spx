@@ -1,0 +1,11 @@
+main (String[] args) {
+  Car myCar; // optional
+  new Car => myCar;
+  "Toyota" => myCar.brand;
+  4 => myCar.wheels;
+  myCar.info -> console.log;
+
+  Person p => johnny;
+  "Johnny" => p.name;
+  p.info -> console.log;
+}

@@ -1,0 +1,5 @@
+String brand;
+Number wheels;
+function info {
+  return brand + " with " + wheels + " wheels";
+}

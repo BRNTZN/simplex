@@ -1,0 +1,4 @@
+main (String[] args) {
+  new Car => myCar;
+  myCar.info -> console.log;
+}

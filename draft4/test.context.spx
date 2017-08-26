@@ -1,0 +1,9 @@
+src = "src/";
+model = src + "model/";
+
+{
+  main: src + "main.spx",
+  types: {
+    Car: model + "car.type.spx"
+  }
+} => Context default
