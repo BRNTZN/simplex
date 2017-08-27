@@ -7,7 +7,7 @@ function newConsole() {
     log: sinon.spy()
   };
 }
-it('This is a spec', function(){
+it('console called', function(){
   expect(simplex).not.to.be.undefined;
   var console = newConsole();
   simplex("Brent", console);
