@@ -1,0 +1,15 @@
+{8 + 9}   // returns 17
+{5 + 3;}  // returns nothing
+
+1000 -> wait    // wait for 1000 miliseconds
+
+{
+  5000 -> wait!
+  "hello " -> Console.log!
+  -> "world"
+}! -> Console.log!  // prints 'hello ', then 5 sec later 'world'
+
+{
+  5000 -> wait! -> "world"
+  "hello " -> Console.log!
+}! -> Console.log!  // prints 'hello ', then 5 sec later 'world'

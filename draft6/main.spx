@@ -1,0 +1,31 @@
+> "hello" -> Console.log!
+> "world" -> Console.log!
+// prints helloworld or worldhello
+
+(Number a, Number b) {
+  return a + b;
+} (Number sum) => function add;
+(8, 2) -> add! -> sum;
+
+
+(20 + 5) > 0 ? {
+  "Greater than 0" -> Console.log!
+} : {
+  "Not greater than 0" -> Console.log!
+}
+
+(function condition, function fn) {
+  condition! ? {
+    fn!
+    (condition, fn) -> while!
+  }
+} => while;
+
+0 => a;
+({
+  return a < 10;
+}, {
+  a -> Console.log!
+  a++
+}) -> while!
+// prints numbers 0 - 9

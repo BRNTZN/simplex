@@ -1,0 +1,38 @@
+"hello world" -> Console.log!;
+
+// prints hello world
+
+"hello world" -> Console.log;
+
+// prints nothing
+
+{"world" -> Console.log!} => printWorld;
+-> "hello" -> Console.log!;
+-> printWorld!;
+
+// prints hello world
+
+(String x) {x -> Console.log!} => printX
+-> "hello world" -> printX;
+
+// prints Nothing
+
+-> "hello world" -> printX!;
+
+// prints hello world
+
+{"hello world" -> printX!} => printHelloWorld;
+
+// prints nothing
+
+-> printHelloWorld!;
+
+// prints hello world
+
+{"hello world" -> printX} => printHelloWorld!;
+
+// prints nothing
+
+{"hello world" -> printX!} => printHelloWorld!;
+
+// prints hello world

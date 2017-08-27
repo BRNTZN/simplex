@@ -1,0 +1,39 @@
+8 => a -> 5 => b
+//  a now contains 8 and b contains 5
+-> {
+  a -> Console.log!
+  b -> Console.log!
+}! // prints 85 or 58
+
+{
+  2 + 6
+} => myFunc
+-> myFunc! => a           // a contains 8
+-> myFunc! + 4 => b       // b contains 12
+
+(Number a, Number b) {
+  a + b
+} => add
+-> (2, 4) -> add! -> c    // c contains 6
+
+
+
+12 => a
+-> Console.log!           // prints 12
+-> Console.log!           // prints 12
+-> a + 1 => b
+-> Console.log!           // prints 13
+-> a + b => c
+-> Console.log => printC  // printsNothing
+-> printC!                // prints 25
+
+
+(Number a, Number b) {
+  a + b
+  a * b
+}! => addAndMultiply
+-> (2, 4) -> addAndMultiply! => sum, product
+-> {
+  sum -> Console.log!
+  -> product -> Console.log!
+}! // prints 68
