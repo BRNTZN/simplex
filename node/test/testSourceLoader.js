@@ -8,7 +8,7 @@ chai.use(chaiAsPromised);
 it('sourceLoader.file', function(){
   expect(sourceLoader).not.to.be.undefined;
   expect(sourceLoader.file).not.to.be.undefined;
-  var data = sourceLoader.file("src/resources/file.txt")
+  var data = sourceLoader.file("test/resources/file.txt")
   return expect(data.then(function(data) {
     return Promise.resolve(data.toString());
   })).to.eventually.equal("this is a file\r\n");

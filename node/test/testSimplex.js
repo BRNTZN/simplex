@@ -10,6 +10,8 @@ function newConsole() {
 it('console called', function(){
   expect(simplex).not.to.be.undefined;
   var console = newConsole();
-  simplex("Brent", console);
-  expect(console.log.called).to.be.true;
+  return simplex("test/resources/file.txt", console).then(function() {
+    expect(console.log.called).to.be.true;
+    expect(console.log.getCall(0).args[0].toString()).to.equal("this is a file\r\n");
+  });
 });
