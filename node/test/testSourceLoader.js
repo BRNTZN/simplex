@@ -11,5 +11,5 @@ it('sourceLoader.file', function(){
   var data = sourceLoader.file("test/resources/file.txt")
   return expect(data.then(function(data) {
     return Promise.resolve(data.toString());
-  })).to.eventually.equal("this is a file\r\n");
+  })).to.eventually.equal('"this is a file" -> Console.log!\r\n');
 });

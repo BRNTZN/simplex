@@ -6,19 +6,38 @@ var writeFile = require("../test/helpers/writeFile.js");
 it('simplex defined', function(){
   expect(simplex).not.to.be.undefined;
 });
-it('console called', function(){
-  var log = sinon.spy();
-  return simplex("test/resources/file.txt", log).then(function() {
-    expect(log.called).to.be.true;
-    expect(log.getCall(0).args[0].toString()).to.equal("this is a file");
-  });
+
+test('"blabla" -> Console.log!', function(log) {
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("blabla");
 });
-it('console called 2', function(){
-  var log = sinon.spy();
-  return writeFile("test/resources/file2.txt", '"blabla" -> console.log').then(function() {
-    return simplex("test/resources/file2.txt", log)
-  }).then(function() {
-    expect(log.called).to.be.true;
-    expect(log.getCall(0).args[0].toString()).to.equal("blabla");
-  });
+
+test('"hellothere" => a -> Console.log!', function(log) {
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("hellothere");
 });
+
+test( '"hello" => a \n' +
+      '"whosethere" => b -> Console.log!', function(log) {
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("whosethere");
+});
+
+test( '"hello" => a \n' +
+      '"whosethere" => b \n' +
+      'a -> Console.log!', function(log) {
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("hello");
+});
+
+
+function test(src, fn) {
+  it(src, function(){
+    var log = sinon.spy();
+    return writeFile("test/resources/main.spx", src).then(function() {
+      return simplex("test/resources/main.spx", log);
+    }).then(function() {
+      fn(log);
+    });
+  });
+}
