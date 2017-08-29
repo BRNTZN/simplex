@@ -202,6 +202,24 @@ test('{4 + 3 Console.log}!!', function(log, errorLog) {
   expect(log.getCall(0).args[0].toString()).to.equal("7");
 });
 
+test('4 + 1 Console.log => print5 !', function(log, errorLog) {
+  expect(errorLog.called).to.be.false;
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("5");
+});
+
+test('30 {Console.log!}!', function(log, errorLog) {
+  expect(errorLog.called).to.be.false;
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("30");
+});
+
+test('19 {Console.log}!!', function(log, errorLog) {
+  expect(errorLog.called).to.be.false;
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("19");
+});
+
 var count = 0;
 function test(src, fn) {
   it(src, function(){
