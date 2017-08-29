@@ -25,6 +25,12 @@ test('"blabla" Console.log!', function(log, errorLog) {
   expect(log.getCall(0).args[0].toString()).to.equal("blabla");
 });
 
+test('"blabla Console.log!', function(log, errorLog) {
+  expect(log.called).to.be.false;
+  expect(errorLog.called).to.be.true;
+  expect(errorLog.getCall(0).args[0].toString()).to.equal("End of string not found: '\"blabla Console.log!'");
+});
+
 test('"blabla"; Console.log!', function(log, errorLog) {
   expect(errorLog.called).to.be.false;
   expect(log.called).to.be.true;
@@ -175,6 +181,13 @@ test('{"fnc" Console.log!}!', function(log, errorLog) {
   expect(errorLog.called).to.be.false;
   expect(log.called).to.be.true;
   expect(log.getCall(0).args[0].toString()).to.equal("fnc");
+});
+
+test('{"called" Console.log!}! "twice" Console.log!', function(log, errorLog) {
+  expect(errorLog.called).to.be.false;
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("called");
+  expect(log.getCall(1).args[0].toString()).to.equal("twice");
 });
 
 var count = 0;

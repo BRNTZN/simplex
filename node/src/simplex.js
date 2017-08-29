@@ -10,8 +10,9 @@ function mainFunction(fileName, log, errorLog) {
   });
 
   function read(data, lastValue) {
-    // console.log("READ: '" + data + "'");
+    console.log("READ: '" + data + "'");
     data = data.trim();
+    if (data.length < 1) return lastValue;
     if (data.startsWith('"')) return readString(data);
     if (data.startsWith("->")) return passOn(data, lastValue);
     if (data.startsWith("=>")) return assign(data, lastValue);
@@ -29,12 +30,13 @@ function mainFunction(fileName, log, errorLog) {
 
   function readString(data) {
     var dataNstring = nextString(data);
-    return read(dataNstring[0], dataNstring[1]);
+    if (dataNstring) return read(dataNstring[0], dataNstring[1]);
   }
 
   // returns an array with string at start of input at index 0 and rest of the data at index 1
   function nextString(data) {
     var end = endingDoubleQuote(data);
+    if (end < 0) return errorLog("End of string not found: '" + data + "'");
     var string = data.slice(1, end);
     return [data.slice(end + 1), string]
   }
@@ -45,6 +47,7 @@ function mainFunction(fileName, log, errorLog) {
       if(data[i] == "\\") i += 2;
       if(data[i] == '"') return i;
     }
+    return -1;
   }
 
   function passOn(data, lastValue) {
@@ -84,7 +87,8 @@ function mainFunction(fileName, log, errorLog) {
   }
 
   function exec(data, lastValue) {
-    return read(lastValue.code, lastValue.args);
+    var result = read(lastValue.code, lastValue.args);
+    return read(data.slice(1), result);
   }
 
   function readNumber(data) {
