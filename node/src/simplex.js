@@ -10,7 +10,7 @@ function mainFunction(fileName, log) {
   });
 
   function read(data, lastValue) {
-    console.log("READ: '" + data + "'");
+    // console.log("READ: '" + data + "'");
     data = data.trim();
     if (data.startsWith('"')) return readString(data);
     if (data.startsWith("->")) return passOn(data, lastValue);
@@ -25,9 +25,15 @@ function mainFunction(fileName, log) {
   }
 
   function readString(data) {
+    var dataNstring = nextString(data);
+    return read(dataNstring[0], dataNstring[1]);
+  }
+
+  // returns an array with string at start of input at index 0 and rest of the data at index 1
+  function nextString(data) {
     var end = endingDoubleQuote(data);
     var string = data.slice(1, end);
-    return read(data.slice(end + 1), string);
+    return [data.slice(end + 1), string]
   }
 
   function endingDoubleQuote(data, start) {
@@ -55,9 +61,15 @@ function mainFunction(fileName, log) {
   }
 
   function readNumber(data) {
+    var numberNrest = nextNumber(data);
+    return read(numberNrest[0], numberNrest[1]);
+  }
+
+  // returns an array with number at start of input at index 0 and rest of the data at index 1
+  function nextNumber(data) {
     var end = endOfNumber(data);
     var number = +data.slice(0, end);
-    return read(data.slice(end), number);
+    return [data.slice(end), number];
   }
 
   function isNumber(n) {
@@ -74,14 +86,21 @@ function mainFunction(fileName, log) {
 
   function add(data, lastValue) {
     data = data.slice(1).trim();
-    if (data.startsWith('"')) {
-      var end = endingDoubleQuote(data);
-      var string = data.slice(1, end);
-      return read(data.slice(end + 1), lastValue + string);
-    }
-    var end = endOfNumber(data);
-    var number = +data.slice(0, end);
-    return read(data.slice(end), lastValue + number);
+    if (data.startsWith('"')) return addToString(data, lastValue);
+    if (isNumber(data[0])) return addToNumber(data, lastValue);
+    var variable = variableNameAtStart(data);
+    if (variable) return read(data.slice(variable.length), lastValue + variables[variable]);
+    console.error("Nothing to add: '" + data + "'");
+  }
+
+  function addToString(data, lastValue) {
+    var dataNstring = nextString(data);
+    return read(dataNstring[0], lastValue + dataNstring[1]);
+  }
+
+  function addToNumber(data, lastValue) {
+    var dataNnumber = nextNumber(data);
+    return read(dataNnumber[0], lastValue + dataNnumber[1]);
   }
 
   function variableNameAtStart(data) {

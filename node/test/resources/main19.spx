@@ -1,0 +1,3 @@
+"hello" => a 
+"whosethere" => b 
+a + b Console.log!

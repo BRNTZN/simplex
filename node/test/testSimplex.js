@@ -103,6 +103,44 @@ test( '"hehe" + "whaddup" Console.log!', function(log) {
   expect(log.getCall(0).args[0].toString()).to.equal("hehewhaddup");
 });
 
+test( '"hello" => a \n' +
+      '"whosethere" => b \n' +
+      'a + b Console.log!', function(log) {
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("hellowhosethere");
+});
+
+test( '2 => a \n' +
+      '9 => b \n' +
+      'a + b Console.log!', function(log) {
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("11");
+});
+
+test( '4 => a \n' +
+      'a + 6 Console.log!', function(log) {
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("10");
+});
+
+test( '32 => a \n' +
+      '5 + a Console.log!', function(log) {
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("37");
+});
+
+test( '22 => a \n' +
+      '"catch" + a Console.log!', function(log) {
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("catch22");
+});
+
+test( '9 => a \n' +
+      'a + " years" Console.log!', function(log) {
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("9 years");
+});
+
 var count = 0;
 function test(src, fn) {
   it(src, function(){
