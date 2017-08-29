@@ -58,9 +58,49 @@ test( '4 Console.log!', function(log) {
   expect(log.getCall(0).args[0].toString()).to.equal("4");
 });
 
+test( '0 Console.log!', function(log) {
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("0");
+});
+
+test( '12540 Console.log!', function(log) {
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("12540");
+});
+
+test( '5.3 Console.log!', function(log) {
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("5.3");
+});
+
+test( '5. Console.log!', function(log) {
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("5");
+});
+
 test( '4 + 8 Console.log!', function(log) {
   expect(log.called).to.be.true;
   expect(log.getCall(0).args[0].toString()).to.equal("12");
+});
+
+test( '4 + 2.6 Console.log!', function(log) {
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("6.6");
+});
+
+test( '4 + "hehe" Console.log!', function(log) {
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("4hehe");
+});
+
+test( '"hehe" + 6 Console.log!', function(log) {
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("hehe6");
+});
+
+test( '"hehe" + "whaddup" Console.log!', function(log) {
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("hehewhaddup");
 });
 
 var count = 0;

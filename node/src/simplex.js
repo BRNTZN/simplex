@@ -66,6 +66,7 @@ function mainFunction(fileName, log) {
 
   function endOfNumber(data) {
 		for (var i = 0; i < data.length; i++) {
+      if (data[i] != ".")
 			if (!isNumber(data[i])) return i;
 		}
 		return i;
@@ -73,6 +74,11 @@ function mainFunction(fileName, log) {
 
   function add(data, lastValue) {
     data = data.slice(1).trim();
+    if (data.startsWith('"')) {
+      var end = endingDoubleQuote(data);
+      var string = data.slice(1, end);
+      return read(data.slice(end + 1), lastValue + string);
+    }
     var end = endOfNumber(data);
     var number = +data.slice(0, end);
     return read(data.slice(end), lastValue + number);
