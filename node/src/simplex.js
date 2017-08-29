@@ -3,7 +3,12 @@ module.exports = mainFunction;
 var sourceLoader = require("./sourceLoader.js")
 
 function mainFunction(fileName, log, errorLog) {
-  var variables = {};
+  var variables = {
+    "Console.log": {
+      isFunction: true,
+      code: "Console.log!"
+    }
+  };
 
   return sourceLoader.file(fileName).then(function(data) {
     return Promise.resolve(read(data.toString()));
@@ -23,7 +28,11 @@ function mainFunction(fileName, log, errorLog) {
     if (isNumber(data[0])) return readNumber(data);
     if (data.startsWith("+")) return add(data, lastValue);
     var variable = variableNameAtStart(data);
-    if (variable) return read(data.slice(variable.length), variables[variable]);
+    if (variable) {
+      var value = variables[variable];
+      if (value.isFunction) value.args = lastValue;
+      return read(data.slice(variable.length), value);
+    }
     console.error("Unexpected expression: '" + data + "'");
     errorLog("Unexpected expression: '" + data + "'");
   }
@@ -69,6 +78,7 @@ function mainFunction(fileName, log, errorLog) {
   function readFunction(data, lastValue) {
     var end = endOfFunction(data);
     var simplexFunc = {
+      isFunction: true,
       args: lastValue,
       code: data.slice(1, end - 1)
     }

@@ -190,6 +190,18 @@ test('{"called" Console.log!}! "twice" Console.log!', function(log, errorLog) {
   expect(log.getCall(1).args[0].toString()).to.equal("twice");
 });
 
+test('{8 + 1}! Console.log!', function(log, errorLog) {
+  expect(errorLog.called).to.be.false;
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("9");
+});
+
+test('{4 + 3 Console.log}!!', function(log, errorLog) {
+  expect(errorLog.called).to.be.false;
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("7");
+});
+
 var count = 0;
 function test(src, fn) {
   it(src, function(){
