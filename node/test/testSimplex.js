@@ -12,6 +12,16 @@ test('"blabla" -> Console.log!', function(log) {
   expect(log.getCall(0).args[0].toString()).to.equal("blabla");
 });
 
+test('"blabla" Console.log!', function(log) {
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("blabla");
+});
+
+test('"blabla"; Console.log!', function(log) {
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0]).to.be.undefined;
+});
+
 test('"hellothere" => a -> Console.log!', function(log) {
   expect(log.called).to.be.true;
   expect(log.getCall(0).args[0].toString()).to.equal("hellothere");
@@ -24,12 +34,34 @@ test( '"hello" => a \n' +
 });
 
 test( '"hello" => a \n' +
+      '"whosethere" => b Console.log!', function(log) {
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("whosethere");
+});
+
+test( '"hello" => a \n' +
       '"whosethere" => b \n' +
       'a -> Console.log!', function(log) {
   expect(log.called).to.be.true;
   expect(log.getCall(0).args[0].toString()).to.equal("hello");
 });
 
+test( '"hello" => a \n' +
+      '"whosethere" => b \n' +
+      'a Console.log!', function(log) {
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("hello");
+});
+
+test( '4 Console.log!', function(log) {
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("4");
+});
+
+test( '4 + 8 Console.log!', function(log) {
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("12");
+});
 
 function test(src, fn) {
   it(src, function(){

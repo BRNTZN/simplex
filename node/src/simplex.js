@@ -15,9 +15,13 @@ function mainFunction(fileName, log) {
     if (data.startsWith('"')) return readString(data);
     if (data.startsWith("->")) return passOn(data, lastValue);
     if (data.startsWith("=>")) return assign(data, lastValue);
+    if (data.startsWith(";")) return read(data.slice(1));
     if (data.startsWith("Console.log!")) return log(lastValue);
+    if (isNumber(data[0])) return readNumber(data);
+    if (data.startsWith("+")) return add(data, lastValue);
     var variable = variableNameAtStart(data);
     if (variable) return read(data.slice(variable.length), variables[variable]);
+    console.error("Unexpected expression: '" + data + "'");
   }
 
   function readString(data) {
@@ -48,6 +52,30 @@ function mainFunction(fileName, log) {
 
   function endingIdentifier(data) {
     return data.indexOf(" ");
+  }
+
+  function readNumber(data) {
+    var end = endOfNumber(data);
+    var number = +data.slice(0, end);
+    return read(data.slice(end), number);
+  }
+
+  function isNumber(n) {
+  	return !isNaN(parseFloat(n)) && isFinite(n);
+	}
+
+  function endOfNumber(data) {
+		for (var i = 0; i < data.length; i++) {
+			if (!isNumber(data[i])) return i;
+		}
+		return i;
+	}
+
+  function add(data, lastValue) {
+    data = data.slice(1).trim();
+    var end = endOfNumber(data);
+    var number = +data.slice(0, end);
+    return read(data.slice(end), lastValue + number);
   }
 
   function variableNameAtStart(data) {
