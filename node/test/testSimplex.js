@@ -63,11 +63,14 @@ test( '4 + 8 Console.log!', function(log) {
   expect(log.getCall(0).args[0].toString()).to.equal("12");
 });
 
+var count = 0;
 function test(src, fn) {
   it(src, function(){
+    count+=1;
+    var localCount = count;
     var log = sinon.spy();
-    return writeFile("test/resources/main.spx", src).then(function() {
-      return simplex("test/resources/main.spx", log);
+    return writeFile("test/resources/main" + localCount + ".spx", src).then(function() {
+      return simplex("test/resources/main" + localCount + ".spx", log);
     }).then(function() {
       fn(log);
     });
