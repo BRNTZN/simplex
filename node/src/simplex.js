@@ -16,6 +16,8 @@ function mainFunction(fileName, log, errorLog) {
     if (data.startsWith("->")) return passOn(data, lastValue);
     if (data.startsWith("=>")) return assign(data, lastValue);
     if (data.startsWith(";")) return read(data.slice(1));
+    if (data.startsWith("{")) return readFunction(data, lastValue);
+    if (data.startsWith("!")) return exec(data, lastValue);
     if (data.startsWith("Console.log!")) return log(lastValue);
     if (isNumber(data[0])) return readNumber(data);
     if (data.startsWith("+")) return add(data, lastValue);
@@ -59,6 +61,30 @@ function mainFunction(fileName, log, errorLog) {
 
   function endingIdentifier(data) {
     return data.indexOf(" ");
+  }
+
+  function readFunction(data, lastValue) {
+    var end = endOfFunction(data);
+    var simplexFunc = {
+      args: lastValue,
+      code: data.slice(1, end - 1)
+    }
+    return read(data.slice(end), simplexFunc);
+  }
+
+  function endOfFunction(data) {
+    console.log(data);
+    var depth = 0;
+    for (var i = 0; i < data.length; i++) {
+      if (data[i] == "{") depth++;
+      if (data[i] == "}") depth--;
+      if (depth == 0) return i+1;
+    }
+    return -1;
+  }
+
+  function exec(data, lastValue) {
+    return read(lastValue.code, lastValue.args);
   }
 
   function readNumber(data) {

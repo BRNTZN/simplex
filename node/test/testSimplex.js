@@ -171,6 +171,12 @@ test( '9 => a \n' +
         expect(log.getCall(0).args[0].toString()).to.equal("9 years");
 });
 
+test('{"fnc" Console.log!}!', function(log, errorLog) {
+  expect(errorLog.called).to.be.false;
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("fnc");
+});
+
 var count = 0;
 function test(src, fn) {
   it(src, function(){
