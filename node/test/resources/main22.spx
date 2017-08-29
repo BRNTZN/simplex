@@ -1,2 +1,2 @@
-32 => a 
-5 + a Console.log!
+4 => a 
+a + 6 Console.log!

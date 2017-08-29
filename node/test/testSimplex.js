@@ -12,6 +12,12 @@ test('"blabla" -> Console.log!', function(log) {
   expect(log.getCall(0).args[0].toString()).to.equal("blabla");
 });
 
+test('xylqdfj', function(log, errorLog) {
+  expect(log.called).to.be.false;
+  expect(errorLog.called).to.be.true;
+  expect(errorLog.getCall(0).args[0].toString()).to.equal("Unexpected expression: 'xylqdfj'");
+});
+
 test('"blabla" Console.log!', function(log) {
   expect(log.called).to.be.true;
   expect(log.getCall(0).args[0].toString()).to.equal("blabla");
@@ -147,10 +153,11 @@ function test(src, fn) {
     count+=1;
     var localCount = count;
     var log = sinon.spy();
+    var errorLog = sinon.spy();
     return writeFile("test/resources/main" + localCount + ".spx", src).then(function() {
-      return simplex("test/resources/main" + localCount + ".spx", log);
+      return simplex("test/resources/main" + localCount + ".spx", log, errorLog);
     }).then(function() {
-      fn(log);
+      fn(log, errorLog);
     });
   });
 }

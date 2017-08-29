@@ -2,7 +2,7 @@ module.exports = mainFunction;
 
 var sourceLoader = require("./sourceLoader.js")
 
-function mainFunction(fileName, log) {
+function mainFunction(fileName, log, errorLog) {
   var variables = {};
 
   return sourceLoader.file(fileName).then(function(data) {
@@ -22,6 +22,7 @@ function mainFunction(fileName, log) {
     var variable = variableNameAtStart(data);
     if (variable) return read(data.slice(variable.length), variables[variable]);
     console.error("Unexpected expression: '" + data + "'");
+    errorLog("Unexpected expression: '" + data + "'");
   }
 
   function readString(data) {

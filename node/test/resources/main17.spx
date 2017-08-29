@@ -1,1 +1,1 @@
-"hehe" + 6 Console.log!
+4 + "hehe" Console.log!
