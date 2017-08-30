@@ -220,6 +220,30 @@ test('19 {Console.log}!!', function(log, errorLog) {
   expect(log.getCall(0).args[0].toString()).to.equal("19");
 });
 
+test('"abc" {Console.log}!!', function(log, errorLog) {
+  expect(errorLog.called).to.be.false;
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("abc");
+});
+
+test('"wrd" => word {Console.log}!!', function(log, errorLog) {
+  expect(errorLog.called).to.be.false;
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("wrd");
+});
+
+test('"bing" => bing; "bang" Console.log!', function(log, errorLog) {
+  expect(errorLog.called).to.be.false;
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("bang");
+});
+
+test('"xjk" => xjk; xjk Console.log!', function(log, errorLog) {
+  expect(errorLog.called).to.be.false;
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("xjk");
+});
+
 var count = 0;
 function test(src, fn) {
   it(src, function(){

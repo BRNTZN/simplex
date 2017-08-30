@@ -71,8 +71,13 @@ function mainFunction(fileName, log, errorLog) {
     return read(data.slice(end), lastValue);
   }
 
+  // returns first occurence of (space/semicolon) or -1 if none found
   function endingIdentifier(data) {
-    return data.indexOf(" ");
+    var firstSpace = data.indexOf(" ");
+    var firstSemiColon = data.indexOf(";");
+    if (firstSpace < 0) return firstSemiColon;
+    if (firstSemiColon < 0) return firstSpace;
+    return firstSpace < firstSemiColon ? firstSpace : firstSemiColon;
   }
 
   function readFunction(data, lastValue) {
