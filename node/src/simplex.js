@@ -26,7 +26,10 @@ function mainFunction(fileName, log, errorLog) {
     if (data.startsWith("!")) return exec(data, lastValue);
     if (data.startsWith("Console.log!")) return log(lastValue);
     if (isNumber(data[0])) return readNumber(data);
-    if (data.startsWith("+")) return add(data, lastValue);
+    if (data.startsWith("+")) return concatOrAddition(data, lastValue);
+    if (data.startsWith("-")) return operate(data, lastValue, subtract);
+    if (data.startsWith("*")) return operate(data, lastValue, multiply);
+    if (data.startsWith("/")) return operate(data, lastValue, divide);
     var variable = variableNameAtStart(data);
     if (variable) {
       var value = variables[variable];
@@ -137,13 +140,14 @@ function mainFunction(fileName, log, errorLog) {
 		return i;
 	}
 
-  function add(data, lastValue) {
-    data = data.slice(1).trim();
-    if (data.startsWith('"')) return addToString(data, lastValue);
-    if (isNumber(data[0])) return addToNumber(data, lastValue);
-    var variable = variableNameAtStart(data);
-    if (variable) return read(data.slice(variable.length), lastValue + variables[variable]);
-    console.error("Nothing to add: '" + data + "'");
+  function concatOrAddition(data, lastValue) {
+    data = data.trim();
+    if (data.slice(1).trim().startsWith('"')) return addToString(data.slice(1).trim(), lastValue);
+    return operate(data, lastValue, add);
+  }
+
+  function add(x, y) {
+    return x + y;
   }
 
   function addToString(data, lastValue) {
@@ -151,9 +155,27 @@ function mainFunction(fileName, log, errorLog) {
     return read(dataNstring[0], lastValue + dataNstring[1]);
   }
 
-  function addToNumber(data, lastValue) {
-    var dataNnumber = nextNumber(data);
-    return read(dataNnumber[0], lastValue + dataNnumber[1]);
+  function operate(data, lastValue, operation) {
+    data = data.slice(1).trim();
+    if (isNumber(data[0])) {
+      var dataNnumber = nextNumber(data);
+      return read(dataNnumber[0], operation(lastValue, dataNnumber[1]));
+    }
+    var variable = variableNameAtStart(data);
+    if (variable) return read(data.slice(variable.length), operation(lastValue, variables[variable]));
+    console.error("Nothing to " + operation + ": '" + data + "'");
+  }
+
+  function subtract(x, y) {
+    return x - y;
+  }
+
+  function multiply(x, y) {
+    return x*y;
+  }
+
+  function divide(x, y) {
+    return x/y;
   }
 
   function variableNameAtStart(data) {

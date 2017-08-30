@@ -286,6 +286,42 @@ test('{"}" Console.log!} => printclosingbracket; printclosingbracket!', function
   expect(log.getCall(0).args[0].toString()).to.equal("}");
 });
 
+test('10 - 8 Console.log!', function(log, errorLog) {
+  expect(errorLog.called).to.be.false;
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("2");
+});
+
+test('12 => nmbr; nmbr - 8 Console.log!', function(log, errorLog) {
+  expect(errorLog.called).to.be.false;
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("4");
+});
+
+test('10 * 8 Console.log!', function(log, errorLog) {
+  expect(errorLog.called).to.be.false;
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("80");
+});
+
+test('12 => nmbr; nmbr * 3 Console.log!', function(log, errorLog) {
+  expect(errorLog.called).to.be.false;
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("36");
+});
+
+test('40 / 5 Console.log!', function(log, errorLog) {
+  expect(errorLog.called).to.be.false;
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("8");
+});
+
+test('12 => nmbr; nmbr / 3 Console.log!', function(log, errorLog) {
+  expect(errorLog.called).to.be.false;
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("4");
+});
+
 
 var count = 0;
 function test(src, fn) {
