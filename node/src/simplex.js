@@ -30,7 +30,9 @@ function mainFunction(fileName, log, errorLog) {
     var variable = variableNameAtStart(data);
     if (variable) {
       var value = variables[variable];
-      if (value.isFunction) value.args = lastValue;
+      if (value.isFunction) {
+        if (lastValue && !value.args) value.args = lastValue;
+      }
       return read(data.slice(variable.length), value);
     }
     console.error("Unexpected expression: '" + data + "'");
@@ -94,6 +96,11 @@ function mainFunction(fileName, log, errorLog) {
     console.log(data);
     var depth = 0;
     for (var i = 0; i < data.length; i++) {
+      if (data[i] == '"') {
+        var end = endingDoubleQuote(data.slice(i));
+        if (end < 0) return errorLog("End of string not found: '" + data + "'");
+        i += end + 1;
+      }
       if (data[i] == "{") depth++;
       if (data[i] == "}") depth--;
       if (depth == 0) return i+1;
@@ -150,9 +157,20 @@ function mainFunction(fileName, log, errorLog) {
   }
 
   function variableNameAtStart(data) {
+    var foundVariable;
+    forEachVariable(function(variable) {
+      if (data.startsWith(variable)) {
+        if (!foundVariable) foundVariable = variable;
+        if (foundVariable.length < variable.length) foundVariable = variable;
+      }
+    });
+    return foundVariable;
+  }
+
+  function forEachVariable(fn) {
     for (var variable in variables) {
       if (variables.hasOwnProperty(variable)) {
-        if (data.startsWith(variable)) return variable;
+        fn(variable);
       }
     }
   }

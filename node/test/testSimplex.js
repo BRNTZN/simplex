@@ -244,6 +244,49 @@ test('"xjk" => xjk; xjk Console.log!', function(log, errorLog) {
   expect(log.getCall(0).args[0].toString()).to.equal("xjk");
 });
 
+test('"bim" => bim; "bimbo" => bimbo; bim Console.log!', function(log, errorLog) {
+  expect(errorLog.called).to.be.false;
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("bim");
+});
+
+test('"bim" => bim; "bimbo" => bimbo; bimbo Console.log!', function(log, errorLog) {
+  expect(errorLog.called).to.be.false;
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("bimbo");
+});
+
+test('"something" Console.log!;', function(log, errorLog) {
+  expect(errorLog.called).to.be.false;
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("something");
+});
+
+test('"def" {Console.log!}!', function(log, errorLog) {
+  expect(errorLog.called).to.be.false;
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("def");
+});
+
+test('"waw" {Console.log!} => printwaw; printwaw!', function(log, errorLog) {
+  expect(errorLog.called).to.be.false;
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("waw");
+});
+
+test('"omg" {Console.log!} => printomg; "other" => other printomg!', function(log, errorLog) {
+  expect(errorLog.called).to.be.false;
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("omg");
+});
+
+test('{"}" Console.log!} => printclosingbracket; printclosingbracket!', function(log, errorLog) {
+  expect(errorLog.called).to.be.false;
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("}");
+});
+
+
 var count = 0;
 function test(src, fn) {
   it(src, function(){
