@@ -340,6 +340,55 @@ test('{4+6}!; Console.log!', function(log, errorLog) {
   expect(log.getCall(0).args[0]).to.be.undefined;
 });
 
+// !!!!!!!!!!!!!!
+test('4 + 8 * 2 Console.log!', function(log, errorLog) {
+  expect(errorLog.called).to.be.false;
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("24");
+});
+
+test('4 + (8 * 2) Console.log!', function(log, errorLog) {
+  expect(errorLog.called).to.be.false;
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("20");
+});
+
+test('4 + ((4+4) * 2) Console.log!', function(log, errorLog) {
+  expect(errorLog.called).to.be.false;
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("20");
+});
+
+test('(2*8) + ((2) * 2) Console.log!', function(log, errorLog) {
+  expect(errorLog.called).to.be.false;
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("20");
+});
+
+test('"hello" => myvar; "goodbye" => myvar; myvar Console.log!', function(log, errorLog) {
+  expect(errorLog.called).to.be.false;
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("goodbye");
+});
+
+test('String a; "hey" => a; a Console.log!', function(log, errorLog) {
+  expect(errorLog.called).to.be.false;
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("hey");
+});
+
+test('"how" => String a; a Console.log!', function(log, errorLog) {
+  expect(errorLog.called).to.be.false;
+  expect(log.called).to.be.true;
+  expect(log.getCall(0).args[0].toString()).to.equal("how");
+});
+
+// test('"param" (String a){a Console.log!}!', function(log, errorLog) {
+//   expect(errorLog.called).to.be.false;
+//   expect(log.called).to.be.true;
+//   expect(log.getCall(0).args[0].toString()).to.equal("param");
+// });
+
 
 var count = 0;
 function test(src, fn) {

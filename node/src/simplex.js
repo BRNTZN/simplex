@@ -3,6 +3,14 @@ module.exports = mainFunction;
 var sourceLoader = require("./sourceLoader.js")
 
 function mainFunction(fileName, log, errorLog) {
+  var types = {
+    "String": {
+      name: "String"
+    },
+    "Number": {
+
+    }
+  }
   var variables = {
     "Console.log": {
       isFunction: true,
@@ -24,12 +32,13 @@ function mainFunction(fileName, log, errorLog) {
     if (data.startsWith(";")) return read(data.slice(1));
     if (data.startsWith("{")) return readFunction(data, lastValue);
     if (data.startsWith("!")) return exec(data, lastValue);
-    if (data.startsWith("Console.log!")) return log(lastValue);
     if (isNumber(data[0])) return readNumber(data);
     if (data.startsWith("+")) return concatOrAddition(data, lastValue);
     if (data.startsWith("-")) return operate(data, lastValue, subtract);
     if (data.startsWith("*")) return operate(data, lastValue, multiply);
     if (data.startsWith("/")) return operate(data, lastValue, divide);
+    if (data.startsWith("Console.log!")) return log(lastValue);
+    if (data.startsWith("(")) return readSubResult(data, lastValue);
     var variable = variableNameAtStart(data);
     if (variable) {
       var value = variables[variable];
@@ -38,6 +47,8 @@ function mainFunction(fileName, log, errorLog) {
       }
       return read(data.slice(variable.length), value);
     }
+    var type = typeNameAtStart(data);
+    if (type) return readDefinition(data, type, lastValue);
     console.error("Unexpected expression: '" + data + "'");
     errorLog("Unexpected expression: '" + data + "'");
   }
@@ -71,8 +82,9 @@ function mainFunction(fileName, log, errorLog) {
   function assign(data, lastValue) {
     data = data.slice(2).trim();
     var end = endingIdentifier(data);
-    var variableName = data.slice(0, end);
-    variables[variableName] = lastValue;
+    var identifier = data.slice(0, end);
+    if (types[identifier]) return readDefinition(data, identifier, lastValue);
+    variables[identifier] = lastValue;
     return read(data.slice(end), lastValue);
   }
 
@@ -96,7 +108,6 @@ function mainFunction(fileName, log, errorLog) {
   }
 
   function endOfFunction(data) {
-    console.log(data);
     var depth = 0;
     for (var i = 0; i < data.length; i++) {
       if (data[i] == '"') {
@@ -161,9 +172,13 @@ function mainFunction(fileName, log, errorLog) {
       var dataNnumber = nextNumber(data);
       return read(dataNnumber[0], operation(lastValue, dataNnumber[1]));
     }
+    if (data[0] == "(") {
+      var dataNsubResult = nextSubResult(data);
+      return read(dataNsubResult[0], operation(lastValue, dataNsubResult[1]))
+    }
     var variable = variableNameAtStart(data);
     if (variable) return read(data.slice(variable.length), operation(lastValue, variables[variable]));
-    console.error("Nothing to " + operation + ": '" + data + "'");
+    console.error("Nothing to " + operation.name + ": '" + data + "'");
   }
 
   function subtract(x, y) {
@@ -176,6 +191,36 @@ function mainFunction(fileName, log, errorLog) {
 
   function divide(x, y) {
     return x/y;
+  }
+
+  function readSubResult(data) {
+    var dataNsubResult = nextSubResult(data);
+    return read(dataNsubResult[0], dataNsubResult[1])
+  }
+
+  function nextSubResult(data) {
+    var end = closingParentheses(data);
+    return [data.slice(end+1), read(data.slice(1, end))];
+  }
+
+  function parenthesized(data, lastValue) {
+    var end = closingParentheses(data);
+
+  }
+
+  function closingParentheses(data) {
+    var depth = 0;
+    for (var i = 0; i < data.length; i++) {
+      if (data[i] == '"') {
+        var end = endingDoubleQuote(data.slice(i));
+        if (end < 0) return errorLog("End of string not found: '" + data + "'");
+        i += end + 1;
+      }
+      if (data[i] == "(") depth++;
+      if (data[i] == ")") depth--;
+      if (depth == 0) return i;
+    }
+    return -1;
   }
 
   function variableNameAtStart(data) {
@@ -195,5 +240,42 @@ function mainFunction(fileName, log, errorLog) {
         fn(variable);
       }
     }
+  }
+
+  function typeNameAtStart(data) {
+    var foundType;
+    forEachType(function(type) {
+      if (data.startsWith(type)) {
+        if (!foundType) foundType = type;
+        if (foundType.length < type.length) foundType = type;
+      }
+    });
+    return foundType;
+  }
+
+  function forEachType(fn) {
+    for (var type in types) {
+      if (types.hasOwnProperty(type)) {
+        fn(type);
+      }
+    }
+  }
+
+  function readDefinition(data, type, lastValue) {
+    var typeObject = types[type];
+    data = data.slice(type.length).trim();
+    var end = endingIdentifier(data);
+    var variableName = data.slice(0, end);
+    if (!variables[variableName]) {
+      variables[variableName] = {
+        type: typeObject
+      }
+    } else {
+      if (variables[variableName].type) return errorLog(variableName + " is already defined as " + typeObject.name + ", cannot define again: " + data);
+      variables[variableName].type = typeObject;
+    }
+    if (lastValue) variables[variableName] = lastValue;
+    data = data.slice(variableName.length - 1).trim();
+    return read(data, variables[variableName])
   }
 }
