@@ -383,6 +383,18 @@ test('"how" => String a; a Console.log!', function(log, errorLog) {
   expect(log.getCall(0).args[0].toString()).to.equal("how");
 });
 
+test('String a; 12 => a; a Console.log!', function(log, errorLog) {
+  expect(errorLog.called).to.be.true;
+  expect(log.called).to.be.false;
+  expect(errorLog.getCall(0).args[0].toString()).to.equal("Type error");
+});
+
+test('8 => String a; a Console.log!', function(log, errorLog) {
+  expect(errorLog.called).to.be.true;
+  expect(log.called).to.be.false;
+  expect(errorLog.getCall(0).args[0].toString()).to.equal("Type error");
+});
+
 // test('{4 + 8;}! => a; a Console.log!', function(log, errorLog) {
 //   expect(errorLog.called).to.be.false;
 //   expect(log.called).to.be.true;

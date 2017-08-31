@@ -54,7 +54,7 @@ function mainFunction(fileName, log, errorLog) {
       return read(data.slice(variable.length), value);
     }
     var type = typeNameAtStart(data);
-    if (type) return readDefinition(data, type, lastValue);
+    if (type) return read(defineVar(data, type));
     console.error("Unexpected expression: '" + data + "'");
     errorLog("Unexpected expression: '" + data + "'");
   }
@@ -70,7 +70,8 @@ function mainFunction(fileName, log, errorLog) {
     if (end < 0) return errorLog("End of string not found: '" + data + "'");
     var string = data.slice(1, end);
     return [data.slice(end + 1), {
-      type: "String", value: string
+      type: types["String"],
+      value: string
     }];
   }
 
@@ -91,9 +92,22 @@ function mainFunction(fileName, log, errorLog) {
     data = data.slice(2).trim();
     var end = endingIdentifier(data);
     var identifier = data.slice(0, end);
-    if (types[identifier]) return readDefinition(data, identifier, lastValue);
+    if (types[identifier]) return assign("=> " + defineVar(data, identifier), lastValue);
+    var variable = variables[identifier];
+    if (variable && variable.type && variable.type !== lastValue.type) return errorLog("Type error");
     variables[identifier] = lastValue;
     return read(data.slice(end), lastValue);
+  }
+
+  function defineVar(data, type) {
+    data = data.slice(type.length).trim();
+    var endIdentifier = endingIdentifier(data);
+    var identifier = data.slice(0, endIdentifier);
+    if (variables[identifier]) return errorLog(identifier + " is already defined");
+    variables[identifier] = {
+      type: types[type]
+    }
+    return data;
   }
 
   // returns first occurence of (space/semicolon) or -1 if none found
@@ -108,7 +122,7 @@ function mainFunction(fileName, log, errorLog) {
   function readFunction(data, lastValue) {
     var end = endOfFunction(data);
     var simplexFunc = {
-      type: "Function",
+      type: types["Function"],
       args: lastValue,
       code: data.slice(1, end - 1)
     }
@@ -285,23 +299,5 @@ function mainFunction(fileName, log, errorLog) {
         fn(type);
       }
     }
-  }
-
-  function readDefinition(data, type, lastValue) {
-    var typeObject = types[type];
-    data = data.slice(type.length).trim();
-    var end = endingIdentifier(data);
-    var variableName = data.slice(0, end);
-    if (!variables[variableName]) {
-      variables[variableName] = {
-        type: typeObject
-      }
-    } else {
-      if (variables[variableName].type) return errorLog(variableName + " is already defined as " + typeObject.name + ", cannot define again: " + data);
-      variables[variableName].type = typeObject;
-    }
-    if (lastValue) variables[variableName] = lastValue;
-    data = data.slice(variableName.length - 1).trim();
-    return read(data, variables[variableName])
   }
 }
