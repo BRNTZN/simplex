@@ -383,6 +383,12 @@ test('"how" => String a; a Console.log!', function(log, errorLog) {
   expect(log.getCall(0).args[0].toString()).to.equal("how");
 });
 
+// test('{4 + 8;}! => a; a Console.log!', function(log, errorLog) {
+//   expect(errorLog.called).to.be.false;
+//   expect(log.called).to.be.true;
+//   expect(log.getCall(0).args[0].toString()).to.equal("how");
+// });
+
 // test('"param" (String a){a Console.log!}!', function(log, errorLog) {
 //   expect(errorLog.called).to.be.false;
 //   expect(log.called).to.be.true;

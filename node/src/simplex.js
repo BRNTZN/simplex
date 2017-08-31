@@ -37,7 +37,10 @@ function mainFunction(fileName, log, errorLog) {
     if (data.startsWith("-")) return operate(data, lastValue, subtract);
     if (data.startsWith("*")) return operate(data, lastValue, multiply);
     if (data.startsWith("/")) return operate(data, lastValue, divide);
-    if (data.startsWith("Console.log!")) return log(lastValue);
+    if (data.startsWith("Console.log!")) {
+      if (lastValue) return log(lastValue.value);
+      return log(lastValue);
+    }
     if (data.startsWith("(")) return readSubResult(data, lastValue);
     var variable = variableNameAtStart(data);
     if (variable) {
@@ -63,7 +66,9 @@ function mainFunction(fileName, log, errorLog) {
     var end = endingDoubleQuote(data);
     if (end < 0) return errorLog("End of string not found: '" + data + "'");
     var string = data.slice(1, end);
-    return [data.slice(end + 1), string]
+    return [data.slice(end + 1), {
+      type: "String", value: string
+    }];
   }
 
   function endingDoubleQuote(data, start) {
@@ -135,7 +140,10 @@ function mainFunction(fileName, log, errorLog) {
   // returns an array with number at start of input at index 0 and rest of the data at index 1
   function nextNumber(data) {
     var end = endOfNumber(data);
-    var number = +data.slice(0, end);
+    var number = {
+      type: "Number",
+      value: +data.slice(0, end)
+    };
     return [data.slice(end), number];
   }
 
@@ -157,13 +165,12 @@ function mainFunction(fileName, log, errorLog) {
     return operate(data, lastValue, add);
   }
 
-  function add(x, y) {
-    return x + y;
-  }
-
   function addToString(data, lastValue) {
     var dataNstring = nextString(data);
-    return read(dataNstring[0], lastValue + dataNstring[1]);
+    return read(dataNstring[0], {
+      type: "String",
+      value: lastValue.value + dataNstring[1].value
+    });
   }
 
   function operate(data, lastValue, operation) {
@@ -181,16 +188,32 @@ function mainFunction(fileName, log, errorLog) {
     console.error("Nothing to " + operation.name + ": '" + data + "'");
   }
 
+  function add(x, y) {
+    return {
+      type: "Number",
+      value: x.value + y.value
+    }
+  }
+
   function subtract(x, y) {
-    return x - y;
+    return {
+      type: "Number",
+      value: x.value - y.value
+    }
   }
 
   function multiply(x, y) {
-    return x*y;
+    return {
+      type: "Number",
+      value: x.value*y.value
+    }
   }
 
   function divide(x, y) {
-    return x/y;
+    return {
+      type: "Number",
+      value: x.value/y.value
+    }
   }
 
   function readSubResult(data) {
