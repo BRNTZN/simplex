@@ -8,12 +8,15 @@ function mainFunction(fileName, log, errorLog) {
       name: "String"
     },
     "Number": {
-
+      name: "Number"
+    },
+    "Function": {
+      name: "Function"
     }
   }
   var variables = {
     "Console.log": {
-      isFunction: true,
+      type: "Function",
       code: "Console.log!"
     }
   };
@@ -45,7 +48,7 @@ function mainFunction(fileName, log, errorLog) {
     var variable = variableNameAtStart(data);
     if (variable) {
       var value = variables[variable];
-      if (value.isFunction) {
+      if (value.type === "Function") {
         if (lastValue && !value.args) value.args = lastValue;
       }
       return read(data.slice(variable.length), value);
@@ -105,7 +108,7 @@ function mainFunction(fileName, log, errorLog) {
   function readFunction(data, lastValue) {
     var end = endOfFunction(data);
     var simplexFunc = {
-      isFunction: true,
+      type: "Function",
       args: lastValue,
       code: data.slice(1, end - 1)
     }
