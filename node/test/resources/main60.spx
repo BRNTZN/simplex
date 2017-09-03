@@ -1,1 +1,1 @@
-"how" => String a; a Console.log!
+"how" => String: a; a Console.log!

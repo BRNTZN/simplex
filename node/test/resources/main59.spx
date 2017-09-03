@@ -1,1 +1,1 @@
-String a; "hey" => a; a Console.log!
+String: a; "hey" => a; a Console.log!

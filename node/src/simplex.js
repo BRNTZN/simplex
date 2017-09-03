@@ -17,7 +17,11 @@ function mainFunction(fileName, log, errorLog) {
   var variables = {
     "Console.log": {
       type: "Function",
-      code: "Console.log!"
+      code: "Console.log!",
+      fn: function(txt) {
+        if (txt) return log(txt.value);
+        log();
+      }
     }
   };
 
@@ -35,21 +39,17 @@ function mainFunction(fileName, log, errorLog) {
     if (data.startsWith(";")) return read(data.slice(1));
     if (data.startsWith("{")) return readFunction(data, lastValue);
     if (data.startsWith("!")) return exec(data, lastValue);
-    if (isNumber(data[0])) return readNumber(data);
     if (data.startsWith("+")) return concatOrAddition(data, lastValue);
     if (data.startsWith("-")) return operate(data, lastValue, subtract);
     if (data.startsWith("*")) return operate(data, lastValue, multiply);
     if (data.startsWith("/")) return operate(data, lastValue, divide);
-    if (data.startsWith("Console.log!")) {
-      if (lastValue) return log(lastValue.value);
-      return log(lastValue);
-    }
     if (data.startsWith("(")) return readSubResult(data, lastValue);
+    if (isNumber(data[0])) return readNumber(data);
     var variable = variableNameAtStart(data);
     if (variable) {
       var value = variables[variable];
       if (value.type === "Function") {
-        if (lastValue && !value.args) value.args = lastValue;
+        if (lastValue) value.args = lastValue;
       }
       return read(data.slice(variable.length), value);
     }
@@ -145,7 +145,12 @@ function mainFunction(fileName, log, errorLog) {
   }
 
   function exec(data, lastValue) {
-    var result = read(lastValue.code, lastValue.args);
+    var result;
+    if (lastValue.fn) {
+      result = lastValue.fn(lastValue.args);
+    } else {
+      result = read(lastValue.code, lastValue.args);
+    }
     return read(data.slice(1), result);
   }
 
